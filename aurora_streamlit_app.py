@@ -28,11 +28,30 @@ MALDIVES_LON_RANGE = (72.0, 74.0)  # Longitude range for Maldives (with some buf
 @st.cache_data
 def load_era5_data():
     """Load ERA5 datasets"""
-    download_path = Path("~/downloads").expanduser()
+    data_path = Path("data")  # Look for data files in data folder
     
-    static_vars_ds = xr.open_dataset(download_path / "static.nc", engine="netcdf4")
-    surf_vars_ds = xr.open_dataset(download_path / "2025-05-05-surface-level.nc", engine="netcdf4")
-    atmos_vars_ds = xr.open_dataset(download_path / "2025-05-05-atmospheric.nc", engine="netcdf4")
+    static_vars_ds = xr.open_dataset(data_path / "static.nc", engine="netcdf4")
+    surf_vars_ds = xr.open_dataset(data_path / "2025-05-05-surface-level.nc", engine="netcdf4")
+    
+    # Load and combine the 5 split atmospheric files
+    atmos_files = [
+        "2025-05-05-atmospheric-part1.nc",
+        "2025-05-05-atmospheric-part2.nc", 
+        "2025-05-05-atmospheric-part3.nc",
+        "2025-05-05-atmospheric-part4.nc",
+        "2025-05-05-atmospheric-part5.nc"
+    ]
+    
+    atmos_datasets = []
+    for file in atmos_files:
+        ds = xr.open_dataset(data_path / file, engine="netcdf4")
+        atmos_datasets.append(ds)
+    
+    # Concatenate along pressure_level dimension to recreate original dataset
+    atmos_vars_ds = xr.concat(atmos_datasets, dim="pressure_level")
+    
+    # Sort by pressure level to ensure proper order (highest to lowest pressure)
+    atmos_vars_ds = atmos_vars_ds.sortby("pressure_level", ascending=False)
     
     return static_vars_ds, surf_vars_ds, atmos_vars_ds
 
@@ -161,7 +180,7 @@ def create_interactive_map(data, lats, lons, title, unit, colorscale='RdYlBu_r')
         mapbox_style="open-street-map",
         mapbox=dict(
             center=dict(lat=np.mean(lats), lon=np.mean(lons)),
-            zoom=8
+            zoom=6
         ),
         title=title,
         height=450,
