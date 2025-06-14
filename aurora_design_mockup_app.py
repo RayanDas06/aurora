@@ -45,7 +45,7 @@ st.set_page_config(
 
 # --- LOCATION SELECTOR ---
 locations = [
-    "Maldives", "East Africa", "Hawaii", "Australia", "Brazil", "Iceland", "Japan", "California", "South Africa"
+    "Malé", "Port Louis", "Chennai", "Dar es Salaam", "Perth", "Muscat", "Maputo", "Jakarta", "Phuket"
 ]
 
 # --- VARIABLE NAMES ---
@@ -65,15 +65,15 @@ col_map, col_selector = st.columns([2, 1])
 
 # Coordinates for each location
 location_coords = {
-    "Maldives": (3.2, 73.2),
-    "East Africa": (-2.0, 39.0),
-    "Hawaii": (20.8, -156.3),
-    "Australia": (-25.3, 133.8),
-    "Brazil": (-14.2, -51.9),
-    "Iceland": (64.96, -19.02),
-    "Japan": (36.2, 138.3),
-    "California": (36.8, -119.4),
-    "South Africa": (-30.6, 22.9)
+    "Malé": (3.2, 73.2),         # North-central Indian Ocean
+    "Port Louis": (-20.16, 57.50),   # Mauritius
+    "Chennai": (13.08, 80.27),      # North-east (India)
+    "Dar es Salaam": (-6.8, 39.28), # West (Tanzania)
+    "Perth": (-31.95, 115.86),      # East (Australia)
+    "Muscat": (23.61, 58.59),       # North-west (Oman)
+    "Maputo": (-25.97, 32.58),      # South-west (Mozambique)
+    "Jakarta": (-6.21, 106.85),     # East (Indonesia)
+    "Phuket": (7.88, 98.39)         # North-east (Thailand)
 }
 
 with col_map:
