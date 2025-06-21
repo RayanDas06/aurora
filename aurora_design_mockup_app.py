@@ -6,7 +6,7 @@ def create_interactive_map(data, lats, lons, title, unit, colorscale='RdYlBu_r')
     """Create interactive geographic map with fixed color scaling"""
     lon_grid, lat_grid = np.meshgrid(lons, lats)
     vmin, vmax = np.nanmin(data), np.nanmax(data)
-    fig = go.Figure(data=go.Scattermapbox(
+    fig = go.Figure(data=go.Scattermap(
         lat=lat_grid.flatten(),
         lon=lon_grid.flatten(),
         mode='markers',
@@ -26,8 +26,8 @@ def create_interactive_map(data, lats, lons, title, unit, colorscale='RdYlBu_r')
                      f'<b>{title}: %{{text}} {unit}</b><extra></extra>'
     ))
     fig.update_layout(
-        mapbox_style="open-street-map",
-        mapbox=dict(
+        map=dict(
+            style="open-street-map",
             center=dict(lat=np.mean(lats), lon=np.mean(lons)),
             zoom=6
         ),
@@ -65,15 +65,15 @@ col_map, col_selector = st.columns([2, 1])
 
 # Coordinates for each location
 location_coords = {
-    "Malé": (3.2, 73.2),         # North-central Indian Ocean
-    "Port Louis": (-20.16, 57.50),   # Mauritius
-    "Chennai": (13.08, 80.27),      # North-east (India)
-    "Dar es Salaam": (-6.8, 39.28), # West (Tanzania)
-    "Perth": (-31.95, 115.86),      # East (Australia)
-    "Muscat": (23.61, 58.59),       # North-west (Oman)
-    "Maputo": (-25.97, 32.58),      # South-west (Mozambique)
-    "Jakarta": (-6.21, 106.85),     # East (Indonesia)
-    "Phuket": (7.88, 98.39)         # North-east (Thailand)
+    "Malé": (3.2, 73.2),         
+    "Port Louis": (-20.16, 57.50),  
+    "Chennai": (13.08, 80.27),      
+    "Dar es Salaam": (-6.8, 39.28),
+    "Perth": (-31.95, 115.86),      
+    "Muscat": (23.61, 58.59),      
+    "Maputo": (-25.97, 32.58),      
+    "Jakarta": (-6.21, 106.85),     
+    "Phuket": (7.88, 98.39)         
 }
 
 with col_map:
@@ -82,7 +82,7 @@ with col_map:
     world_lats = [v[0] for v in location_coords.values()]
     world_lons = [v[1] for v in location_coords.values()]
     world_names = list(location_coords.keys())
-    world_fig = go.Figure(go.Scattermapbox(
+    world_fig = go.Figure(go.Scattergeo(
         lat=world_lats,
         lon=world_lons,
         mode='markers+text',
@@ -91,10 +91,13 @@ with col_map:
         textposition="top right"
     ))
     world_fig.update_layout(
-        mapbox_style="open-street-map",
-        mapbox=dict(
-            center=dict(lat=0, lon=0),
-            zoom=1.2
+        geo=dict(
+            scope="world",
+            projection_type="natural earth",
+            showcountries=True,
+            landcolor="rgb(217, 217, 217)",
+            showland=True,
+            fitbounds="locations"
         ),
         margin={"r":0,"t":0,"l":0,"b":0},
         height=350
